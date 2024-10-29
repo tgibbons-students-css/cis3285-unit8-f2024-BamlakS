@@ -13,7 +13,7 @@ namespace SingleResponsibilityPrinciple
         /// </summary>
         /// <param name="stream"> File must be passed in as a Stream. </param>
         /// <returns> Returns a list of strings, one for each string for each line in the file </returns>
-        private IEnumerable<string> ReadTradeData(Stream stream)
+        public IEnumerable<string> ReadTradeData(Stream stream)
         {
             // read rows
             List<string> lines = new List<string>();
@@ -90,7 +90,7 @@ namespace SingleResponsibilityPrinciple
         /// </summary>
         /// <param name="lines"> The strings containing the trade data, each string should contain one trade in format of "GBPUSD,1000,1.51"</param>
         /// <returns> A list of TradeRecords, one record for each trade </returns>
-        private IEnumerable<TradeRecord> ParseTrades(IEnumerable<string> lines)
+        public IEnumerable<TradeRecord> ParseTrades(IEnumerable<string> lines)
         {
             List<TradeRecord> trades = new List<TradeRecord>();
 
@@ -174,9 +174,13 @@ namespace SingleResponsibilityPrinciple
         public void ProcessTrades(Stream stream)
         {
             var lines = ReadTradeData(stream);
+            if (!lines.Any()) 
+            {
+                LogMessage("INFO: No trades to process");
+                return; 
+            }
             var trades = ParseTrades(lines);
             StoreTrades(trades);
         }
-
     }
 }
